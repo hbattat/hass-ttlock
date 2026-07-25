@@ -495,9 +495,7 @@ class Services:
     async def handle_update_state(self, call: ServiceCall):
         """Refresh the lock state by calling the coordinator's refresh method."""
         for coordinator in self._get_coordinators(call).values():
-            # Set the locked state to none to force the API call.
-            coordinator.data.locked = None
-            await coordinator.async_refresh()
+            await coordinator.async_force_state_refresh()
 
     async def handle_list_cards(self, call: ServiceCall) -> ServiceResponse:
         """List all IC cards for the selected locks."""

@@ -535,6 +535,17 @@ class LockUpdateCoordinator(DataUpdateCoordinator[LockState]):
             self.data.lock_sound = on
             self.async_update_listeners()
 
+    async def async_force_state_refresh(self) -> None:
+        """Force a fresh fetch of the lock's open/closed state from the API.
+
+        Clearing ``locked`` makes ``_async_update_data`` re-query the lock's
+        current state (which is otherwise only fetched when unknown) rather
+        than reusing the cached value.
+        """
+        if self.data:
+            self.data.locked = None
+        await self.async_refresh()
+
 
 class GatewaysUpdateCoordinator(DataUpdateCoordinator[dict[int, Gateway]]):
     """Class to manage fetching Gateway data."""
